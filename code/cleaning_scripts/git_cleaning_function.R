@@ -1,19 +1,11 @@
 library(tidyverse)
 library(stringi)
+library(here)
 
 rm(list=ls())
 
-# CREATE CLOSURE TO READ IN APPROPRIATE FILES ------------------
-file_path <- function(FUN, path) {
-  function(file, ...) {
-    FUN(file = file.path(path, file), ...)
-  }
-}
-
-read_files <- file_path(read.csv, "/Users/patrickpierson/Dropbox/project_directories/sa_viol_voter_turnout/data/raw_data/electoral_returns")
-
-# READ IN DATA
-data <- read_files("lge_2006.csv")
+# READ IN DATA USING HERE PACKAGE
+data <- read.csv(here("data", "raw_data", "electoral_returns", "lge_2006.csv"))
 
 glimpse(data)
 

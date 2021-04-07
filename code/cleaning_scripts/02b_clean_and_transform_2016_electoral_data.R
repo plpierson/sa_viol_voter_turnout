@@ -114,4 +114,21 @@ data_2016_clean <- data_2016_clean %>%
   mutate(across(.cols = registered_voters:for_KAROO_DEMOCRATIC_FORCE, .fns = sum, na.rm=TRUE)) %>% 
   distinct(local_municipality_id, .keep_all = TRUE)  # keep one observation for each unique municipality (all others are now duplicates)
 
+# Create total_votes_cast variable
+data_2016_clean <- data_2016_clean %>% 
+  dplyr::rowwise() %>% 
+  dplyr::mutate(total_votes_cast = sum(dplyr::c_across(for_AFRICAN_CHRISTIAN_DEMOCRATIC_PARTY:
+                                                         for_KAROO_DEMOCRATIC_FORCE), na.rm=TRUE))
+
+data_2016_clean <- data_2016_clean %>% 
+  relocate(total_votes_cast, .after = registered_voters)
+
+
+#now create new variables
+data_2016_clean <- data_2016_clean %>% 
+  mutate(across(starts_with("for_"), (function(x) (x/total_votes_cast)), .names = "vote_share_{.col}")) %>% 
+  mutate(pct_turnout = (total_votes_cast/registered_voters)*100,
+         pct_spoilt = (spoilt_votes_cast/total_votes_cast)*100) 
+
+
 saveRDS(data_2016_clean, here("data", "processed_data", "data_2016_clean_ward.RDS"))

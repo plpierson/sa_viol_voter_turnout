@@ -27,6 +27,26 @@ dat_2016 <- left_join(df_2016, controls_2016, by = "ward_id")
 dat <- do.call("bind_rows", list(dat_2006, dat_2011, dat_2016))
 
 
+# flag candidates vs. sitting officials
+dat <- dat %>% 
+  mutate(candidate = case_when(
+    ward_id=="74804009" & electoral_cycle==2006 ~1, #merafong city
+    ward_id=="52201011" & electoral_cycle==2006 ~1, #umshwathi
+    ward_id=="29200025" & electoral_cycle==2011 ~1,
+    ward_id=="29300015" & electoral_cycle==2016 ~1,
+    ward_id=="52502006" & electoral_cycle==2016 ~1,
+    ward_id=="52308015" & electoral_cycle==2016 ~1,
+    ward_id=="52104001" & electoral_cycle==2016 ~1,
+    ward_id=="52308020" & electoral_cycle==2016 ~1,
+    ward_id=="29300004" & electoral_cycle==2016 ~1,
+    ward_id=="79800058" & electoral_cycle==2016 ~1)
+  )
+
+dat <- dat %>% 
+  mutate(candidate = replace_na(candidate, 0))
+
+
+
 # EXPORT
 saveRDS(dat, here("data", "processed_data", "panel_data_sa.rds"))
         

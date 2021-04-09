@@ -63,7 +63,7 @@ clean_strings <- function(data) {
     mutate(across(c(province, local_municipality_id, local_municipality_name, party_name), .fns = ~stringi::stri_replace_all_regex(.x, "'", ""))) %>% 
     mutate(across(c(province, local_municipality_id, local_municipality_name, party_name), .fns = ~stringi::stri_replace_all_regex(.x, "/", ""))) %>% 
     mutate(across(c(province, local_municipality_id, local_municipality_name, party_name), .fns = ~stringi::stri_replace_all_regex(.x, "-", ""))) %>% 
-    mutate(local_municipality_id = str_replace_all(local_municipality_id, "KZ", "KZN")) %>% 
+    #mutate(local_municipality_id = str_replace_all(local_municipality_id, "KZ", "KZN")) %>% 
     mutate(local_municipality_id = str_replace_all(local_municipality_id, "NP", "LIM")) %>% 
     mutate(local_municipality_id = str_replace_all(local_municipality_id, "Durban", "ETH")) %>% 
     mutate(local_municipality_id = str_replace_all(local_municipality_id, "Cape Town", "CPT")) %>% 

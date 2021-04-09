@@ -59,6 +59,9 @@ dat <- dat %>%
     ward_id=="79800058" & electoral_cycle==2016 ~1)
     )
 
+dat <- dat %>% 
+  mutate(candidate = replace_na(candidate, 0))
+
 
 dat_asif <- dat %>% 
   filter(treat==1)

@@ -12,7 +12,7 @@ library(cobalt)
 
 
 # IMPORT DATA --------------------------
-dat <- readRDS("dat_asif.rds")
+dat <- readRDS(here("data", "processed_data", "dat_asif.rds"))
 
 
 ##############################
@@ -73,6 +73,134 @@ t.test(failed$hhi_index, success$hhi_index)
 t.test(failed$registered_voters, success$registered_voters)
 
 
+  # conduct randomization inference for p-values
+install.packages("ri2")
+library(ri2)
+
+
+  # first, declare randomization procedure
+declare <- declare_ra(N = 54, m = 38)
+
+# randomization inference for unemployment rate
+ 
+  # set-up data to work nicely with ri2 package
+data_unemploy <- dat
+data_unemploy <- data_unemploy %>% 
+  rename(Z = success,
+         Y = unemploy_rate)
+
+
+ri_unemploy <- conduct_ri(
+  formula = Y ~ Z,
+  declaration = declare,
+  sharp_hypothesis = 0,
+  data = data_unemploy
+)
+
+summary(ri_unemploy)
+
+
+# randomization inference for prop_informal
+
+# set-up data to work nicely with ri2 package
+data_informal <- dat
+data_informal <- data_informal %>% 
+  rename(Z = success,
+         Y = prop_informal)
+
+
+ri_informal <- conduct_ri(
+  formula = Y ~ Z,
+  declaration = declare,
+  sharp_hypothesis = 0,
+  data = data_informal
+)
+
+summary(ri_informal)
+
+
+# randomization inference for prop_black
+
+# set-up data to work nicely with ri2 package
+data_black <- dat
+data_black <- data_black %>% 
+  rename(Z = success,
+         Y = prop_black)
+
+
+ri_black <- conduct_ri(
+  formula = Y ~ Z,
+  declaration = declare,
+  sharp_hypothesis = 0,
+  data = data_black
+)
+
+summary(ri_black)
+
+
+
+# randomization inference for prop_english
+
+# set-up data to work nicely with ri2 package
+data_english <- dat
+data_english <- data_english %>% 
+  rename(Z = success,
+         Y = prop_english)
+
+
+ri_english <- conduct_ri(
+  formula = Y ~ Z,
+  declaration = declare,
+  sharp_hypothesis = 0,
+  data = data_english
+)
+
+summary(ri_english)
+
+
+# randomization inference for hhi_index
+
+# set-up data to work nicely with ri2 package
+data_hhi <- dat
+data_hhi <- data_hhi %>% 
+  rename(Z = success,
+         Y = hhi_index)
+
+
+ri_hhi <- conduct_ri(
+  formula = Y ~ Z,
+  declaration = declare,
+  sharp_hypothesis = 0,
+  data = data_hhi
+)
+
+summary(ri_hhi)
+
+
+# randomization inference for registered_voters
+
+# set-up data to work nicely with ri2 package
+data_voters <- dat
+data_voters <- data_voters %>% 
+  rename(Z = success,
+         Y = registered_voters)
+
+
+ri_voters <- conduct_ri(
+  formula = Y ~ Z,
+  declaration = declare,
+  sharp_hypothesis = 0,
+  data = data_voters
+)
+
+summary(ri_voters)
+
+
+
+
+
+
+
 # READ IN ASSASSINATIONS DATA TO COMPARE TARGET_AGE BETWEEN TREATMENT AND CONTROL
 library(readxl)
 library(lubridate)
@@ -104,8 +232,28 @@ success_viol <- viol %>%
 
 t.test(failed_viol$age, success_viol$age)
 
+# randomization inference for age
 
+# set-up data to work nicely with ri2 package
+data_age <- viol
+data_age <- data_age %>% 
+  mutate(success = ifelse(failed==1, 0, 1)) %>% 
+  filter(!is.na(age))
 
+data_age <- data_age %>% 
+  rename(Z = success,
+         Y = age)
+
+declare_age <- declare_ra(N = 50, m = 37)
+
+ri_age <- conduct_ri(
+  formula = Y ~ Z,
+  declaration = declare_age,
+  sharp_hypothesis = 0,
+  data = data_age
+)
+
+summary(ri_age)
 
 
 
